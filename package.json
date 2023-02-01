@@ -1,0 +1,63 @@
+{
+  "name": "react-tomtom-maps",
+  "version": "2.6.1",
+  "description": "React wrapper for TomTom Maps SDK for Web",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "npm-watch compile",
+    "compile": "tsc --skipLibCheck",
+    "build": "npm run compile",
+    "prepare": "npm run build"
+  },
+  "files": [
+    "lib",
+    "dist",
+    "src"
+  ],
+  "devDependencies": {
+    "@types/geojson": "^7946.0.7",
+    "@types/lodash.isequal": "^4.5.5",
+    "@types/node": "^12.0.7",
+    "@types/react": "^16.8.19",
+    "npm-watch": "^0.6.0",
+    "tslint": "^5.17.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-react": "^4.0.0",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@tomtom-international/web-sdk-maps": "^6.15.0",
+    "@tomtom-international/web-sdk-plugin-minimap": "^2.1.6",
+    "@tomtom-international/web-sdk-plugin-pancontrols": "^2.1.6",
+    "@tomtom-international/web-sdk-plugin-searchbox": "^3.1.11",
+    "@tomtom-international/web-sdk-plugin-zoomcontrols": "^2.1.6",
+    "@tomtom-international/web-sdk-services": "^6.15.0",
+    "@turf/bbox": "^6.0.1",
+    "@turf/bbox-polygon": "^6.0.1",
+    "@turf/buffer": "^5.1.5",
+    "@turf/collect": "^6.0.1",
+    "@turf/helpers": "^6.1.4",
+    "@turf/hex-grid": "^6.0.2",
+    "@turf/square-grid": "^6.0.2",
+    "@turf/triangle-grid": "^6.0.1",
+    "colorbrewer": "^1.3.0",
+    "lodash.flatten": "^4.4.0",
+    "lodash.isequal": "^4.5.0",
+    "react-fast-compare": "^2.0.4",
+    "simple-statistics": "^7.0.5",
+    "uuid": "^3.3.3"
+  },
+  "peerDependencies": {
+    "react": "^16.12.0"
+  },
+  "watch": {
+    "compile": {
+      "silent": false,
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts,tsx"
+    }
+  }
+}

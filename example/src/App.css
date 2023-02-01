@@ -1,0 +1,32 @@
+.App {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.App__main {
+  display: flex;
+  overflow-y: auto;
+  align-items: stretch;
+  flex: 1;
+}
+
+.NavBar {
+  width: 300px;
+}
+
+.Example {
+  flex: 1;
+}
+
+.margin-left-30 {
+  margin-left: 30px;
+}
+
+.mapboxgl-popup .mapboxgl-popup-close-button {
+  color: #6b6b6b;
+  font-size: 18px;
+  padding-right: 7px;
+  padding-top: 3px;
+}

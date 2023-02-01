@@ -1,0 +1,11 @@
+.Palette {
+  box-sizing: content-box;
+  display: flex;
+  height: 20px;
+  min-width: 100px;
+  align-items: stretch;
+}
+
+.Palette__swatch {
+  flex: 1;
+}
