@@ -1,0 +1,23 @@
+.NavBar {
+  background: #f2f2f2;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+}
+
+.NavBar a {
+  display: block;
+  padding: 10px 20px;
+  color: rgba(0, 0, 0, 0.9);
+  font-family: Gotham, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.NavBar a:first-child {
+  padding-top: 20px;
+}
+
+.NavBar a.active {
+  color: #dc4650;
+}
