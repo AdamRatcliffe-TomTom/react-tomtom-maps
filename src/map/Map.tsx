@@ -1,6 +1,6 @@
 import React, { Component, createRef } from "react";
 import tt from "@tomtom-international/web-sdk-maps";
-import _isEqual from "lodash.isequal";
+import { isEqual } from "lodash";
 import IMapThemeOptions from "./IMapThemeOptions";
 import IMapOptions from "./IMapOptions";
 import { MapContext } from "./MapContext";
@@ -228,7 +228,7 @@ class Map extends Component<Props & Events, State> {
 
       if (
         didFitBoundsUpdate ||
-        !_isEqual(oldProps.fitBoundsOptions, newProps.fitBoundsOptions)
+        !isEqual(oldProps.fitBoundsOptions, newProps.fitBoundsOptions)
       ) {
         const fitBoundsOptions: Partial<tt.FitBoundsOptions> = {
           ...newProps.fitBoundsOptions
@@ -245,14 +245,8 @@ class Map extends Component<Props & Events, State> {
       zoomDidChange || centerDidChange || bearingDidChange || pitchDidChange;
 
     if (viewPortDidChange) {
-      const {
-        movingMethod,
-        zoom,
-        center,
-        bearing,
-        pitch,
-        animationOptions
-      } = newProps;
+      const { movingMethod, zoom, center, bearing, pitch, animationOptions } =
+        newProps;
 
       this._map[movingMethod!]({
         zoom,
@@ -263,7 +257,7 @@ class Map extends Component<Props & Events, State> {
       });
     }
 
-    if (newProps.mapStyle && !_isEqual(newProps.mapStyle, oldProps.mapStyle)) {
+    if (newProps.mapStyle && !isEqual(newProps.mapStyle, oldProps.mapStyle)) {
       this._map.setStyle(newProps.mapStyle);
     }
   }
