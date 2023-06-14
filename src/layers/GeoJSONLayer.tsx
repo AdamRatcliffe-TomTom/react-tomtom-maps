@@ -1,7 +1,7 @@
 import { Component } from "react";
 import tt, { Map } from "@tomtom-international/web-sdk-maps";
 import uuid from "uuid/v4";
-import _isEqual from "lodash.isequal";
+import { isEqual } from "lodash";
 import LayerTypes from "./LayerTypes";
 import { withMap } from "../map/MapContext";
 
@@ -140,7 +140,7 @@ class GeoJSONLayer extends Component<Props> {
     const layerFilterChanged =
       (this.props.layerOptions &&
         layerOptions &&
-        !_isEqual(this.props.layerOptions.filter, layerOptions.filter)) ||
+        !isEqual(this.props.layerOptions.filter, layerOptions.filter)) ||
       !layerOptions;
 
     types.forEach((type) => {
@@ -152,7 +152,7 @@ class GeoJSONLayer extends Component<Props> {
 
       // update paint properties if needed
       const paintProp = toCamelCase(type) + "Paint";
-      if (!_isEqual(prevProps[paintProp], this.props[paintProp])) {
+      if (!isEqual(prevProps[paintProp], this.props[paintProp])) {
         for (let key in this.props[paintProp]) {
           map.setPaintProperty(layerId, key, this.props[paintProp][key]);
         }
@@ -160,7 +160,7 @@ class GeoJSONLayer extends Component<Props> {
 
       // update layout properties if needed
       const layoutProp = toCamelCase(type) + "Layout";
-      if (!_isEqual(prevProps[layoutProp], this.props[layoutProp])) {
+      if (!isEqual(prevProps[layoutProp], this.props[layoutProp])) {
         for (let key in this.props[layoutProp]) {
           map.setLayoutProperty(layerId, key, this.props[layoutProp][key]);
         }

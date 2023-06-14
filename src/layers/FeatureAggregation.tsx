@@ -1,7 +1,7 @@
 import { Component } from "react";
 import tt from "@tomtom-international/web-sdk-maps";
 import uuid from "uuid/v4";
-import _flatten from "lodash.flatten";
+import { flatten } from "lodash";
 import { featureCollection as turfFeatureCollection } from "@turf/helpers";
 import turfBbox from "@turf/bbox";
 import turfHexGrid from "@turf/hex-grid";
@@ -88,8 +88,9 @@ function clampBuckets(colorScheme: string, buckets: number) {
 }
 
 function calculateExpansionBounds(feature: GeoJSON.Feature) {
-  const coordinates = _flatten(((feature.geometry as GeoJSON.Polygon)
-    .coordinates as unknown) as [number, number][]);
+  const coordinates = flatten(
+    (feature.geometry as GeoJSON.Polygon).coordinates
+  ) as unknown as [number, number][];
   const bounds = coordinates.reduce(
     (bounds: tt.LngLatBounds, coord: [number, number]) => {
       return bounds.extend(new tt.LngLat(coord[0], coord[1]));
@@ -226,12 +227,12 @@ class FeatureAggregation extends Component<Props, State> {
       const { layout, paint } = this.getLayerStyle(type) as any;
 
       if (layout) {
-        Object.keys(layout).forEach(key => {
+        Object.keys(layout).forEach((key) => {
           map.setLayoutProperty(layerId, key, layout[key]);
         });
       }
       if (paint) {
-        Object.keys(paint).forEach(key => {
+        Object.keys(paint).forEach((key) => {
           map.setPaintProperty(layerId, key, paint[key]);
         });
       }
@@ -251,7 +252,7 @@ class FeatureAggregation extends Component<Props, State> {
     const clampedBuckets = clampBuckets(colorScheme!, buckets!);
     const colors = ColorBrewer[colorScheme!][clampedBuckets];
     const values = polygons.features.map(
-      feature => feature.properties!.childCount
+      (feature) => feature.properties!.childCount
     );
     const breaks = equalIntervalBreaks(values, buckets! - 1);
 
@@ -269,14 +270,14 @@ class FeatureAggregation extends Component<Props, State> {
     if (!data) return;
 
     const features = data.features
-      .map(feature => ({
+      .map((feature) => ({
         ...feature,
         properties: {
           id: feature.properties?.id || uuid(),
           ...feature.properties
         }
       }))
-      .filter(feature => !!feature.geometry) as GeoJSON.Feature[];
+      .filter((feature) => !!feature.geometry) as GeoJSON.Feature[];
     const fc = turfFeatureCollection(features);
     const bbox = turfBbox(fc);
     const polygons = getGridFunction(type!)(bbox, polygonSide, { units });
@@ -393,7 +394,13 @@ class FeatureAggregation extends Component<Props, State> {
             "text-field": ["get", "childCount"],
             "text-font": ["Noto-Medium"],
             "text-size": {
-              stops: [[0, 8], [10, 12], [13, 13], [14, 14], [15, 15]]
+              stops: [
+                [0, 8],
+                [10, 12],
+                [13, 13],
+                [14, 14],
+                [15, 15]
+              ]
             },
             visibility: !extrude && showLabels ? "visible" : "none"
           },
@@ -401,7 +408,11 @@ class FeatureAggregation extends Component<Props, State> {
             "text-color": labelColor,
             "text-halo-color": labelHaloColor,
             "text-halo-width": {
-              stops: [[0, 1], [16, 1.5], [17, 2]]
+              stops: [
+                [0, 1],
+                [16, 1.5],
+                [17, 2]
+              ]
             }
           }
         };
@@ -419,8 +430,8 @@ class FeatureAggregation extends Component<Props, State> {
 
       if (layers) {
         layers
-          .filter(layer => layer.source === this.id)
-          .forEach(layer => map.removeLayer(layer.id));
+          .filter((layer) => layer.source === this.id)
+          .forEach((layer) => map.removeLayer(layer.id));
       }
 
       map.removeSource(this.id);
@@ -436,7 +447,7 @@ class FeatureAggregation extends Component<Props, State> {
     const { map } = this.props;
     const layerId = this.buildLayerId(type);
     const events = Object.keys(eventToHandler);
-    events.forEach(event => {
+    events.forEach((event) => {
       map.on(event as any, layerId, this[eventToHandler[event]]);
     });
   }
@@ -445,7 +456,7 @@ class FeatureAggregation extends Component<Props, State> {
     const { map } = this.props;
     const layerId = this.buildLayerId(type);
     const events = Object.keys(eventToHandler);
-    events.forEach(event => {
+    events.forEach((event) => {
       map.off(event as any, layerId, this[eventToHandler[event]]);
     });
   }
@@ -455,7 +466,7 @@ class FeatureAggregation extends Component<Props, State> {
     const { hoveredStateId } = this.state;
 
     if (event.features && event.features.length > 0) {
-        if (hoveredStateId) {
+      if (hoveredStateId) {
         map.setFeatureState(
           { source: this.id, id: hoveredStateId },
           { hover: false }
@@ -467,13 +478,9 @@ class FeatureAggregation extends Component<Props, State> {
       decodeFeatureProperties(feature);
 
       const featureId = feature.id;
-      map.setFeatureState(
-        { source: this.id, id: featureId! },
-        { hover: true }
-      );
+      map.setFeatureState({ source: this.id, id: featureId! }, { hover: true });
 
       this.setState({ hoveredStateId: featureId });
-  
 
       onMouseMove && onMouseMove(feature, event);
     }
