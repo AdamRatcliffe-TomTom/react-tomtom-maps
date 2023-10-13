@@ -1,6 +1,6 @@
 {
   "name": "react-tomtom-maps",
-  "version": "2.6.2",
+  "version": "2.7.0",
   "description": "React wrapper for TomTom Maps SDK for Web",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

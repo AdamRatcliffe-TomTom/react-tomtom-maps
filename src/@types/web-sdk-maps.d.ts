@@ -678,6 +678,7 @@ declare module "@tomtom-international/web-sdk-maps" {
 
     export interface StylesVisibilityOptions {
       map?: boolean;
+      poi?: boolean;
       trafficFlow?: boolean;
       trafficIncidents?: boolean;
     }
