@@ -215,6 +215,33 @@ class Map extends Component<Props & Events, State> {
       }
     }
 
+    if (newProps.stylesVisibility) {
+      const poi = newProps.stylesVisibility?.poi;
+      const poiDidChange = poi !== oldProps.stylesVisibility?.poi;
+
+      if (poiDidChange) {
+        this._map[poi ? "showPOI" : "hidePOI"]();
+      }
+
+      const trafficFlow = newProps.stylesVisibility?.trafficFlow;
+      const trafficFlowDidChange =
+        trafficFlow !== oldProps.stylesVisibility?.trafficFlow;
+
+      if (trafficFlowDidChange) {
+        this._map[trafficFlow ? "showTrafficFlow" : "hideTrafficFlow"]();
+      }
+
+      const trafficIncidents = newProps.stylesVisibility?.trafficIncidents;
+      const trafficIncidentsDidChange =
+        trafficIncidents !== oldProps.stylesVisibility?.trafficIncidents;
+
+      if (trafficIncidentsDidChange) {
+        this._map[
+          trafficIncidents ? "showTrafficIncidents" : "hideTrafficIncidents"
+        ]();
+      }
+    }
+
     if (newProps.bounds) {
       const didFitBoundsUpdate =
         oldProps.bounds !== newProps.bounds || // Check for reference equality
