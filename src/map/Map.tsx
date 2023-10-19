@@ -33,6 +33,7 @@ interface Props {
   bounds?: [[number, number], [number, number]];
   fitBoundsOptions?: Partial<tt.FitBoundsOptions>;
   maxBounds?: tt.LngLatBoundsLike;
+  attributionControl?: boolean;
   movingMethod?: "flyTo" | "easeTo" | "jumpTo";
   animationOptions?: Partial<tt.AnimationOptions>;
   mapOptions?: Partial<IMapOptions>;
@@ -53,6 +54,7 @@ class Map extends Component<Props & Events, State> {
     center: DEFAULT_CENTER,
     bearing: 0,
     pitch: 0,
+    attributionControl: true,
     movingMethod: "flyTo",
     customAttribution: "",
     attributionSeparator: "|",
@@ -105,6 +107,7 @@ class Map extends Component<Props & Events, State> {
       bounds,
       fitBoundsOptions,
       maxBounds,
+      attributionControl,
       mapOptions,
       customAttribution,
       onStyleLoad
@@ -125,6 +128,7 @@ class Map extends Component<Props & Events, State> {
       bounds,
       fitBoundsOptions,
       maxBounds,
+      attributionControl,
       ...mapOptions
     });
 
@@ -285,6 +289,7 @@ class Map extends Component<Props & Events, State> {
     }
 
     if (newProps.mapStyle && !isEqual(newProps.mapStyle, oldProps.mapStyle)) {
+      console.log("setting new map style: ", newProps.mapStyle);
       this._map.setStyle(newProps.mapStyle);
     }
   }
