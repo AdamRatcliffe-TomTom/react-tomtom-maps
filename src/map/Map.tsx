@@ -246,6 +246,10 @@ class Map extends Component<Props & Events, State> {
       }
     }
 
+    if (newProps.mapStyle && !isEqual(newProps.mapStyle, oldProps.mapStyle)) {
+      this._map.setStyle(newProps.mapStyle);
+    }
+
     if (newProps.bounds) {
       const didFitBoundsUpdate =
         oldProps.bounds !== newProps.bounds || // Check for reference equality
@@ -286,11 +290,6 @@ class Map extends Component<Props & Events, State> {
         pitch,
         ...animationOptions
       });
-    }
-
-    if (newProps.mapStyle && !isEqual(newProps.mapStyle, oldProps.mapStyle)) {
-      console.log("setting new map style: ", newProps.mapStyle);
-      this._map.setStyle(newProps.mapStyle);
     }
   }
 
