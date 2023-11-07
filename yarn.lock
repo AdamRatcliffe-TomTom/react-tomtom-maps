@@ -78,7 +78,21 @@
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.1.0.tgz#497c67a1cef50d1a2459ba60f315e448d2ad87fe"
   integrity sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q==
 
-"@tomtom-international/web-sdk-maps@^6.15.0", "@tomtom-international/web-sdk-maps@latest":
+"@tomtom-international/web-sdk-maps@^6.25.0":
+  version "6.25.0"
+  resolved "https://registry.yarnpkg.com/@tomtom-international/web-sdk-maps/-/web-sdk-maps-6.25.0.tgz#bf0929264351e43838b5af97a8893eb280c77d73"
+  integrity sha512-9LHuebnvEZJqDegC3+rd1xhevORAymrFpVq5Vqtz9xCcA3Y55fKEIEpK330keDT8oGaJSWj5hX5Tzgox2hxnqQ==
+  dependencies:
+    "@mapbox/mapbox-gl-rtl-text" "0.2.3"
+    "@types/mapbox-gl" "1.12.8"
+    core-js "3.6.2"
+    lodash "4.17.21"
+    mapbox-gl "1.13.2"
+    node-fetch "2.6.7"
+    regenerator-runtime "0.12.1"
+    uuid "3.3.3"
+
+"@tomtom-international/web-sdk-maps@latest":
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/@tomtom-international/web-sdk-maps/-/web-sdk-maps-6.23.0.tgz#7580551c88df6f4ddc0a76a3a4bdb70aa4cf7c5c"
   integrity sha512-ibnUVyI+YoIDarS8ETW9OGYI0xvuJetZyZNihmdR7Lnejx9vs2I4rHYJXNIBt622Y6TGl0oIGnvhCfYTochKKw==
@@ -121,7 +135,7 @@
   dependencies:
     "@tomtom-international/web-sdk-maps" latest
 
-"@tomtom-international/web-sdk-plugin-searchbox@^3.1.11":
+"@tomtom-international/web-sdk-plugin-searchbox@^3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@tomtom-international/web-sdk-plugin-searchbox/-/web-sdk-plugin-searchbox-3.2.0.tgz#5baa31ae013541119d7839e76ae174c928717386"
   integrity sha512-H6QqT3kGa+XrJ88KNkxnGWMohPvxPte1+ftKA7By+4Ks5Sc3JvxaR/UUX7cRCBB7FsBtrQ3nEoplSQuabCh2Eg==
@@ -137,7 +151,27 @@
   dependencies:
     "@tomtom-international/web-sdk-maps" next
 
-"@tomtom-international/web-sdk-services@^6.15.0", "@tomtom-international/web-sdk-services@latest":
+"@tomtom-international/web-sdk-services@^6.25.0":
+  version "6.25.0"
+  resolved "https://registry.yarnpkg.com/@tomtom-international/web-sdk-services/-/web-sdk-services-6.25.0.tgz#c89bc9a127b432ea9fa9fcb430c48b50a743213a"
+  integrity sha512-owpr/OToUdmHv5Ojyey5jj/gQZ1cBoNBNgr/cWKdtBYWl6aWtF7wBWH//DrHVCH/14sM5FQuiRUyqXON+PxzMA==
+  dependencies:
+    "@types/geojson" "7946.0.7"
+    lodash.castarray "4.4.0"
+    lodash.flatten "4.4.0"
+    lodash.has "4.5.2"
+    lodash.isempty "4.4.0"
+    lodash.isfunction "3.0.9"
+    lodash.isinteger "4.0.4"
+    lodash.isnil "4.0.0"
+    lodash.isobject "3.0.2"
+    lodash.isstring "4.0.1"
+    lodash.isundefined "3.0.1"
+    node-fetch "3.2.10"
+    regenerator-runtime "0.12.1"
+    uuid "8.3.2"
+
+"@tomtom-international/web-sdk-services@latest":
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/@tomtom-international/web-sdk-services/-/web-sdk-services-6.23.0.tgz#c9c0d10cd0872b3f913147dc1c99da2617c193ad"
   integrity sha512-SNoqVI+PczvU1qPjIZPYKRRtyfPnmQ0DrS8k8FIxUO5Lvt4BF1j3nTfBfZO/buATc9cYamuP9wtY/j5DmGqKCQ==
@@ -1326,7 +1360,7 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
 
-"js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
+js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
@@ -1439,13 +1473,6 @@ lodash@4.17.21, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
-
-loose-envify@^1.1.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
-  integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
-  dependencies:
-    js-tokens "^3.0.0 || ^4.0.0"
 
 lowercase-keys@^1.0.0:
   version "1.0.1"
@@ -1855,14 +1882,6 @@ rc@^1.0.1, rc@^1.1.6:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-dom@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
-  integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
-  dependencies:
-    loose-envify "^1.1.0"
-    scheduler "^0.23.0"
-
 react-fast-compare@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
@@ -1980,13 +1999,6 @@ safe-regex@^1.1.0:
   integrity sha512-aJXcif4xnaNUzvUuC5gcb46oTS7zvg4jpMTnuqtrEPlR3vFr4pxtdTwaF1Qs3Enjn9HK+ZlwQui+a7z0SywIzg==
   dependencies:
     ret "~0.1.10"
-
-scheduler@^0.23.0:
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"
-  integrity sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==
-  dependencies:
-    loose-envify "^1.1.0"
 
 semver-diff@^2.0.0:
   version "2.1.0"
