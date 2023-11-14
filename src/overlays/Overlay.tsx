@@ -127,7 +127,7 @@ class Overlay extends Component<Props, State> {
     const { map, coordinates, offset, draggable } = this
       .props as PropsWithDefaults;
 
-    if (prevProps.coordinates !== coordinates) {
+    if (coordinates && prevProps.coordinates !== coordinates) {
       const position = this.getPosition();
       const anchor =
         this.props.anchor ||
@@ -157,10 +157,7 @@ class Overlay extends Component<Props, State> {
     const delta = coords.sub(this._initialScreenCoordinates!);
     const normalizedOffset = tt.Point.convert(offset);
 
-    return map
-      .project(coordinates)
-      .add(delta)
-      .add(normalizedOffset);
+    return map.project(coordinates).add(delta).add(normalizedOffset);
   }
 
   setDraggable(draggable: boolean) {
