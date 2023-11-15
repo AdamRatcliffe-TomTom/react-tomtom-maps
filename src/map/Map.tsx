@@ -33,6 +33,7 @@ interface Props {
   bounds?: [[number, number], [number, number]];
   fitBoundsOptions?: Partial<tt.FitBoundsOptions>;
   maxBounds?: tt.LngLatBoundsLike;
+  padding: number | tt.PaddingOptions;
   attributionControl?: boolean;
   movingMethod?: "flyTo" | "easeTo" | "jumpTo";
   animationOptions?: Partial<tt.AnimationOptions>;
@@ -107,6 +108,7 @@ class Map extends Component<Props & Events, State> {
       bounds,
       fitBoundsOptions,
       maxBounds,
+      padding,
       attributionControl,
       mapOptions,
       customAttribution,
@@ -139,6 +141,11 @@ class Map extends Component<Props & Events, State> {
         onStyleLoad(this._map, event);
       }
     });
+
+    if (padding !== undefined) {
+      // @ts-ignore
+      this._map.__om.setPadding(padding);
+    }
 
     if (customAttribution!.length) {
       this._map.once("ATTRIBUTION_LOAD_END", this.addAttributions);
@@ -217,6 +224,11 @@ class Map extends Component<Props & Events, State> {
       if (maxBoundsDidChange) {
         this._map.setMaxBounds(newProps.maxBounds);
       }
+    }
+
+    if (newProps.padding && !isEqual(newProps.padding, oldProps.padding)) {
+      // @ts-ignore
+      this._map.__om.setPadding(newProps.padding);
     }
 
     if (newProps.stylesVisibility) {
