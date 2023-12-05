@@ -309,6 +309,10 @@ class Map extends Component<Props & Events, State> {
     return this._map;
   }
 
+  isReady() {
+    return this.state.ready;
+  }
+
   render() {
     const { className, containerStyle, children } = this.props;
     const { ready } = this.state;
