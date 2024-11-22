@@ -16,7 +16,7 @@ import Image from "./layers/Image";
 import Source from "./layers/Source";
 import GeoJSONLayer from "./layers/GeoJSONLayer";
 import FeatureAggregation from "./layers/FeatureAggregation";
-import { withMap } from "./map/MapContext";
+import { MapContext, withMap } from "./map/MapContext";
 
 export {
   ProductInfo,
@@ -36,6 +36,7 @@ export {
   Source,
   GeoJSONLayer,
   FeatureAggregation,
+  MapContext,
   withMap
 };
 
