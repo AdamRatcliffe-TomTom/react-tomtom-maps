@@ -5,8 +5,6 @@ import ColorBrewer from "colorbrewer";
 import Palette from "../components/Palette";
 import selectStyles from "../selectStyles";
 
-import mapStyle from "./basic_dark.json";
-
 import data from "../data/civic_art_collection.json";
 
 import { API_KEY } from "../config";
@@ -266,7 +264,7 @@ const PointAggregation = () => {
     <Map
       apiKey={API_KEY}
       containerStyle={{ width: "100%", height: "100%" }}
-      mapStyle={mapStyle}
+      mapStyle="https://api.tomtom.com/style/1/style/22.2.1-*/?map=2/basic_street-dark"
       pitch={state.pitch}
       bounds={state.bounds}
       fitBoundsOptions={fitBoundsOptions}
