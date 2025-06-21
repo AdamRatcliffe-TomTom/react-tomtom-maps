@@ -36,6 +36,7 @@ interface Props {
   mapOptions?: Partial<IMapOptions>;
   customAttribution?: string | [string];
   attributionSeparator?: string;
+  globe?: boolean;
   children?: any;
 }
 
@@ -55,6 +56,7 @@ class Map extends Component<Props & Events, State> {
     movingMethod: "flyTo",
     customAttribution: "",
     attributionSeparator: "|",
+    globe: true,
     mapOptions: {
       minZoom: 0,
       maxZoom: 20,
@@ -113,6 +115,23 @@ class Map extends Component<Props & Events, State> {
     });
   }
 
+  /**
+   * Sets the map projection and updates the container background accordingly
+   */
+  private setGlobe(isGlobe: boolean) {
+    if (isGlobe) {
+      this._map.setProjection({ type: "globe" });
+      if (this._mapContainerRef.current) {
+        this._mapContainerRef.current.style.backgroundColor = "#081832";
+      }
+    } else {
+      this._map.setProjection({ type: "mercator" });
+      if (this._mapContainerRef.current) {
+        this._mapContainerRef.current.style.backgroundColor = "";
+      }
+    }
+  }
+
   componentDidMount() {
     const {
       apiKey,
@@ -129,7 +148,8 @@ class Map extends Component<Props & Events, State> {
       mapOptions,
       customAttribution,
       onStyleLoad,
-      attributionSeparator
+      attributionSeparator,
+      globe
     } = this.props;
 
     // Resolve the map style using the style resolver
@@ -172,6 +192,13 @@ class Map extends Component<Props & Events, State> {
 
       if (onStyleLoad) {
         onStyleLoad(this._map, {} as any);
+      }
+    });
+
+    // Set projection on style load
+    this._map.on("style.load", () => {
+      if (globe) {
+        this.setGlobe(true);
       }
     });
 
@@ -219,6 +246,8 @@ class Map extends Component<Props & Events, State> {
     const mapStyleDidChange =
       newProps.mapStyle && !isEqual(newProps.mapStyle, oldProps.mapStyle);
 
+    const projectionDidChange = oldProps.globe !== newProps.globe;
+
     if (
       newProps.containerStyle!.width !== oldProps.containerStyle!.width ||
       newProps.containerStyle!.height !== oldProps.containerStyle!.height
@@ -246,6 +275,11 @@ class Map extends Component<Props & Events, State> {
     if (mapStyleDidChange) {
       const resolvedStyle = resolveStyle(newProps.mapStyle, newProps.apiKey);
       this._map.setStyle(resolvedStyle as string);
+    }
+
+    // Handle projection changes
+    if (projectionDidChange) {
+      this.setGlobe(newProps.globe || false);
     }
 
     // Handle attribution control changes
