@@ -1,22 +1,22 @@
 import React, { Component } from "react";
-import tt from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 import { withMap } from "../map/MapContext";
 import { calculateAnchor, anchorTranslates } from "./Anchor";
 
 export type OverlayDragEventHandler = (event: {
-  lngLat: tt.LngLat;
-  point: tt.Point;
+  lngLat: maplibregl.LngLat;
+  point: maplibregl.Point;
 }) => void;
 
 type AlignmentType = "map" | "viewport" | "auto";
 
 interface Props {
-  map: tt.Map;
+  map: maplibregl.Map;
   type?: string;
   className: string;
-  coordinates: tt.LngLatLike;
+  coordinates: maplibregl.LngLatLike;
   anchor?: string;
-  offset?: tt.PointLike;
+  offset?: maplibregl.PointLike;
   rotation?: number;
   pitchAlignment?: AlignmentType;
   rotationAlignment?: AlignmentType;
@@ -33,7 +33,7 @@ interface Props {
 
 interface DefaultProps {
   className: string;
-  offset: tt.PointLike;
+  offset: maplibregl.PointLike;
   rotation: number;
   rotationAlignment: string;
   pitchAlignment: string;
@@ -43,17 +43,17 @@ interface DefaultProps {
 type PropsWithDefaults = Props & DefaultProps;
 
 interface State {
-  position: tt.Point | undefined;
+  position: maplibregl.Point | undefined;
   anchor: string | undefined;
 }
 
-function moveTranslate(point: tt.Point): string {
+function moveTranslate(point: maplibregl.Point): string {
   const { x, y } = point;
   return `translate(${x.toFixed(0)}px,${y.toFixed(0)}px)`;
 }
 
 function rotationTransform(
-  map: tt.Map,
+  map: maplibregl.Map,
   rotation: number,
   rotationAlignment: AlignmentType
 ) {
@@ -66,7 +66,7 @@ function rotationTransform(
   }
 }
 
-function pitchTransform(map: tt.Map, pitchAlignment: AlignmentType) {
+function pitchTransform(map: maplibregl.Map, pitchAlignment: AlignmentType) {
   if (pitchAlignment === "viewport" || pitchAlignment === "auto") {
     return "rotateX(0deg)";
   } else if (pitchAlignment === "map") {
@@ -78,9 +78,9 @@ function pitchTransform(map: tt.Map, pitchAlignment: AlignmentType) {
 function getAnchorClassName(type?: string, anchor?: string): string {
   switch (type) {
     case "marker":
-      return anchor ? `mapboxgl-marker-anchor-${anchor}` : "";
+      return anchor ? `maplibregl-marker-anchor-${anchor}` : "";
     case "popup":
-      return anchor ? `mapboxgl-popup-anchor-${anchor}` : "";
+      return anchor ? `maplibregl-popup-anchor-${anchor}` : "";
     default:
       return "";
   }
@@ -89,7 +89,7 @@ function getAnchorClassName(type?: string, anchor?: string): string {
 class Overlay extends Component<Props, State> {
   static defaultProps: DefaultProps = {
     className: "",
-    offset: new tt.Point(0, 0),
+    offset: new maplibregl.Point(0, 0),
     rotation: 0,
     rotationAlignment: "auto",
     pitchAlignment: "auto",
@@ -102,7 +102,7 @@ class Overlay extends Component<Props, State> {
   };
 
   private _container = React.createRef<HTMLDivElement>();
-  private _initialScreenCoordinates: tt.Point | undefined;
+  private _initialScreenCoordinates: maplibregl.Point | undefined;
 
   componentDidMount() {
     const { map, coordinates, offset, draggable } = this.props;
@@ -141,21 +141,21 @@ class Overlay extends Component<Props, State> {
     }
   }
 
-  getPosition(): tt.Point {
+  getPosition(): maplibregl.Point {
     const { map, offset, coordinates } = this.props as PropsWithDefaults;
-    const normalizedOffset = tt.Point.convert(offset);
+    const normalizedOffset = maplibregl.Point.convert(offset);
 
     let { x, y } = map.project(coordinates!);
     x += normalizedOffset.x;
     y += normalizedOffset.y;
 
-    return new tt.Point(x, y);
+    return new maplibregl.Point(x, y);
   }
 
-  calculatePositionFromScreenCoords(coords: tt.Point) {
+  calculatePositionFromScreenCoords(coords: maplibregl.Point) {
     const { map, coordinates, offset } = this.props as PropsWithDefaults;
     const delta = coords.sub(this._initialScreenCoordinates!);
-    const normalizedOffset = tt.Point.convert(offset);
+    const normalizedOffset = maplibregl.Point.convert(offset);
 
     return map.project(coordinates).add(delta).add(normalizedOffset);
   }
@@ -172,7 +172,7 @@ class Overlay extends Component<Props, State> {
 
   addDragHandler = (event: MouseEvent) => {
     const { screenX, screenY } = event;
-    this._initialScreenCoordinates = new tt.Point(screenX, screenY);
+    this._initialScreenCoordinates = new maplibregl.Point(screenX, screenY);
 
     document.addEventListener("mousemove", this.handleDrag);
     document.addEventListener("mouseup", this.handleDragEnd);
@@ -188,7 +188,7 @@ class Overlay extends Component<Props, State> {
     this._container.current!.style.pointerEvents = "none";
 
     const { screenX, screenY } = event;
-    const coords = new tt.Point(screenX, screenY);
+    const coords = new maplibregl.Point(screenX, screenY);
     const position = this.calculatePositionFromScreenCoords(coords);
 
     this.setState({ position }, () => {
@@ -208,7 +208,7 @@ class Overlay extends Component<Props, State> {
 
     if (this.props.onDragEnd) {
       const { screenX, screenY } = event;
-      const coords = new tt.Point(screenX, screenY);
+      const coords = new maplibregl.Point(screenX, screenY);
       const position = this.calculatePositionFromScreenCoords(coords);
 
       this.props.onDragEnd({

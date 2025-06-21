@@ -1,4 +1,4 @@
-import tt from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 
 export const anchorTranslates = {
   center: "translate(-50%, -50%)",
@@ -13,9 +13,9 @@ export const anchorTranslates = {
 };
 
 export function calculateAnchor(
-  map: tt.Map,
-  position: tt.LngLatLike,
-  offset: tt.PointLike,
+  map: maplibregl.Map,
+  position: maplibregl.LngLatLike,
+  offset: maplibregl.PointLike,
   element: HTMLElement
 ): string {
   const { offsetWidth: mapWidth, offsetHeight: mapHeight } = map.getContainer();
@@ -25,7 +25,7 @@ export function calculateAnchor(
     offsetHeight: 0
   };
   const halfWidth = elWidth / 2;
-  const { x: offsetX, y: offsetY } = tt.Point.convert(offset);
+  const { x: offsetX, y: offsetY } = maplibregl.Point.convert(offset);
   const anchors = [];
 
   if (y - (elHeight - offsetY) < 0) {

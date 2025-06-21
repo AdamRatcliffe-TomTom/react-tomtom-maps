@@ -1,6 +1,6 @@
 import * as React from "react";
 import { withMap } from "../map/MapContext";
-import { Map } from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 
 interface ImageOptionsType {
   pixelRatio?: number;
@@ -9,9 +9,9 @@ interface ImageOptionsType {
 
 type ImageDataType =
   | HTMLImageElement
-  | ArrayBufferView
-  | { width: number; height: number; data: Uint8Array | Uint8ClampedArray }
-  | ImageData;
+  | ImageData
+  | ImageBitmap
+  | { width: number; height: number; data: Uint8Array | Uint8ClampedArray };
 
 export interface Props {
   id: string;
@@ -20,7 +20,7 @@ export interface Props {
   options?: ImageOptionsType;
   onLoaded?: () => void;
   onError?: (error: Error) => void;
-  map: Map;
+  map: maplibregl.Map;
 }
 
 class Image extends React.Component<Props> {
@@ -40,8 +40,7 @@ class Image extends React.Component<Props> {
       Image.removeImage(this.props);
     }
 
-    // @ts-ignore
-    if (nextProps.map && !nextProps.map.__om.hasImage(id)) {
+    if (nextProps.map && !nextProps.map.hasImage(id)) {
       // Add missing image to map
       this.loadImage(nextProps);
     }
@@ -55,20 +54,20 @@ class Image extends React.Component<Props> {
     const { map, id, url, data, options, onError } = props;
 
     if (data) {
-      map.addImage(id, data, options);
+      map.addImage(id, data as any, options);
       this.loaded();
     } else if (url) {
-      map.loadImage(url, (error: Error | undefined, image: ImageDataType) => {
-        if (error) {
+      map
+        .loadImage(url)
+        .then((image: any) => {
+          map.addImage(id, image, options);
+          this.loaded();
+        })
+        .catch((error: Error) => {
           if (onError) {
             onError(error);
           }
-
-          return;
-        }
-        map.addImage(id, image, options);
-        this.loaded();
-      });
+        });
     }
   }
 

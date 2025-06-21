@@ -1,14 +1,14 @@
 import React, { PureComponent } from "react";
-import tt from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 import Overlay, { OverlayDragEventHandler } from "./Overlay";
 import Icon from "./Icon";
 
 interface Props {
   className?: string;
   style?: React.CSSProperties;
-  coordinates: tt.LngLatLike;
+  coordinates: maplibregl.LngLatLike;
   anchor?: string;
-  offset?: tt.PointLike;
+  offset?: maplibregl.PointLike;
   color?: string;
   width?: number;
   height?: number;
@@ -30,16 +30,17 @@ class Marker extends PureComponent<Props> {
   };
 
   render() {
-    const { className, anchor, color, width, height, children, ...otherProps } = this.props;
+    const { className, anchor, color, width, height, children, ...otherProps } =
+      this.props;
 
     return (
       <Overlay
         type="marker"
-        className={`mapboxgl-marker ${className}`}
+        className={`maplibregl-marker ${className}`}
         anchor={anchor}
         {...otherProps}
       >
-        {children || <Icon color={color} width={width} height={height}/>}
+        {children || <Icon color={color} width={width} height={height} />}
       </Overlay>
     );
   }

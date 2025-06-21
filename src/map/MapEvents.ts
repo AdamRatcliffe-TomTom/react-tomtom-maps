@@ -1,7 +1,7 @@
-import tt from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 
 export type MapEventHandler = (
-  map: tt.Map,
+  map: maplibregl.Map,
   evt: React.SyntheticEvent<any>
 ) => void;
 
@@ -109,26 +109,23 @@ export type Listeners = {
 export const listenEvents = (
   partialEvents: EventMapping,
   props: Partial<Events>,
-  map: tt.Map
+  map: maplibregl.Map
 ) =>
-  Object.keys(partialEvents).reduce(
-    (listeners, event) => {
-      const propEvent = props[event];
+  Object.keys(partialEvents).reduce((listeners, event) => {
+    const propEvent = (props as any)[event];
 
-      if (propEvent) {
-        const listener = (evt: React.SyntheticEvent<any>) => {
-          propEvent(map, evt);
-        };
+    if (propEvent) {
+      const listener = (evt: React.SyntheticEvent<any>) => {
+        propEvent(map, evt);
+      };
 
-        map.on(partialEvents[event], listener);
+      map.on((partialEvents as any)[event], listener);
 
-        listeners[event] = listener;
-      }
+      (listeners as any)[event] = listener;
+    }
 
-      return listeners;
-    },
-    {} as Listeners
-  );
+    return listeners;
+  }, {} as Listeners);
 
 export const updateEvents = (
   listeners: Listeners,
@@ -136,18 +133,24 @@ export const updateEvents = (
   map: any
 ) => {
   const toListenOff = Object.keys(events).filter(
-    eventKey => listeners[eventKey] && typeof nextProps[eventKey] !== "function"
+    (eventKey) =>
+      (listeners as any)[eventKey] &&
+      typeof (nextProps as any)[eventKey] !== "function"
   );
 
-  toListenOff.forEach(key => {
-    map.off(events[key], listeners[key]);
-    delete listeners[key];
+  toListenOff.forEach((key) => {
+    map.off((events as any)[key], (listeners as any)[key]);
+    delete (listeners as any)[key];
   });
 
   const toListenOn = Object.keys(events)
-    .filter(key => !listeners[key] && typeof nextProps[key] === "function")
+    .filter(
+      (key) =>
+        !(listeners as any)[key] &&
+        typeof (nextProps as any)[key] === "function"
+    )
     .reduce(
-      (acc, next) => ((acc[next] = events[next]), acc),
+      (acc, next) => (((acc as any)[next] = (events as any)[next]), acc),
       {} as EventMapping
     );
 

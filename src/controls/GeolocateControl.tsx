@@ -1,7 +1,5 @@
 import { Component } from "react";
-import tt, {
-  GeolocateControl as TTGeolocateControl
-} from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 import isEqual from "react-fast-compare";
 import { ControlPositions } from "./ControlPositions";
 import { withMap } from "../map/MapContext";
@@ -13,16 +11,16 @@ export interface PositionOptions {
 }
 
 export interface Events {
-  onError?: Function;
-  onGeolocate?: Function;
-  onTrackUserLocationEnd?: Function;
-  onTrackUserLocationStart?: Function;
+  onError?: (event: any) => void;
+  onGeolocate?: (event: any) => void;
+  onTrackUserLocationEnd?: (event: any) => void;
+  onTrackUserLocationStart?: (event: any) => void;
 }
 
 interface Props {
-  map: tt.Map;
+  map: maplibregl.Map;
   positionOptions?: Partial<PositionOptions>;
-  fitBoundsOptions?: Partial<tt.FitBoundsOptions>;
+  fitBoundsOptions?: Partial<maplibregl.FitBoundsOptions>;
   trackUserLocation?: boolean;
   showUserLocation?: boolean;
   position?: ControlPositions;
@@ -41,7 +39,7 @@ class GeolocateControl extends Component<Props & Events> {
     onTrackUserLocationStart: () => {}
   };
 
-  private _control!: tt.Control;
+  private _control!: maplibregl.GeolocateControl;
   private _onMap: boolean = false;
 
   shouldComponentUpdate(nextProps: Props) {
@@ -78,17 +76,20 @@ class GeolocateControl extends Component<Props & Events> {
     } = this.props;
 
     if (map) {
-      this._control = new TTGeolocateControl({
+      this._control = new maplibregl.GeolocateControl({
         positionOptions,
         fitBoundsOptions,
         trackUserLocation,
         showUserLocation
       });
 
-      this._control.on("error", onError!);
-      this._control.on("geolocate", onGeolocate!);
-      this._control.on("trackuserlocationend", onTrackUserLocationEnd!);
-      this._control.on("trackuserlocationstart", onTrackUserLocationStart!);
+      this._control.on("error", onError as any);
+      this._control.on("geolocate", onGeolocate as any);
+      this._control.on("trackuserlocationend", onTrackUserLocationEnd as any);
+      this._control.on(
+        "trackuserlocationstart",
+        onTrackUserLocationStart as any
+      );
 
       map.addControl(this._control, position);
 
@@ -108,10 +109,13 @@ class GeolocateControl extends Component<Props & Events> {
     } = this.props;
 
     if (this._control) {
-      this._control.off("error", onError!);
-      this._control.off("geolocate", onGeolocate!);
-      this._control.off("trackuserlocationend", onTrackUserLocationEnd!);
-      this._control.off("trackuserlocationstart", onTrackUserLocationStart!);
+      this._control.off("error", onError as any);
+      this._control.off("geolocate", onGeolocate as any);
+      this._control.off("trackuserlocationend", onTrackUserLocationEnd as any);
+      this._control.off(
+        "trackuserlocationstart",
+        onTrackUserLocationStart as any
+      );
 
       if (this._onMap) {
         map.removeControl(this._control);

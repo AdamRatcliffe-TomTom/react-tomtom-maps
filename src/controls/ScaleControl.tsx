@@ -1,14 +1,12 @@
 import { PureComponent } from "react";
-import tt, {
-  ScaleControl as TTScaleControl
-} from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 import { ControlPositions } from "./ControlPositions";
 import { withMap } from "../map/MapContext";
 
 export type Units = "imperial" | "metric" | "nautical";
 
 interface Props {
-  map: tt.Map;
+  map: maplibregl.Map;
   maxWidth?: number;
   unit: Units;
   position?: ControlPositions;
@@ -21,7 +19,7 @@ class ScaleControl extends PureComponent<Props> {
     position: "bottom-left"
   };
 
-  private _control!: tt.Control;
+  private _control!: maplibregl.ScaleControl;
   private _onMap: boolean = false;
 
   componentDidMount() {
@@ -43,7 +41,7 @@ class ScaleControl extends PureComponent<Props> {
     const { map, maxWidth, unit, position } = this.props;
 
     if (map) {
-      this._control = new TTScaleControl({
+      this._control = new maplibregl.ScaleControl({
         maxWidth,
         unit
       });

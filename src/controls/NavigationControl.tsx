@@ -1,12 +1,10 @@
 import { PureComponent } from "react";
-import tt, {
-  NavigationControl as TTNavigationControl
-} from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 import { ControlPositions } from "./ControlPositions";
 import { withMap } from "../map/MapContext";
 
 interface Props {
-  map: tt.Map;
+  map: maplibregl.Map;
   showCompass?: boolean;
   showZoom?: boolean;
   showExtendedRotationControls?: boolean;
@@ -29,7 +27,7 @@ class NavigationControl extends PureComponent<Props> {
     position: "top-right"
   };
 
-  private _control!: tt.Control;
+  private _control!: maplibregl.NavigationControl;
   private _onMap: boolean = false;
 
   componentDidMount() {
@@ -51,7 +49,7 @@ class NavigationControl extends PureComponent<Props> {
     const { map, position, ...otherProps } = this.props;
 
     if (map) {
-      this._control = new TTNavigationControl({
+      this._control = new maplibregl.NavigationControl({
         ...otherProps
       });
       map.addControl(this._control, position);

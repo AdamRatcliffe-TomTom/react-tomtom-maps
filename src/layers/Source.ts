@@ -1,22 +1,16 @@
 import { Component } from "react";
-import tt, {
-  GeoJSONSourceRaw,
-  VectorSource,
-  RasterSource,
-  GeoJSONSource,
-  Layer
-} from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 import { withMap } from "../map/MapContext";
 
-export interface LayerWithBefore extends Layer {
+export type LayerWithBefore = any & {
   before?: string;
-}
+};
 
 interface Props {
   id: string;
-  geoJsonSource?: GeoJSONSourceRaw;
-  tileJsonSource?: VectorSource | RasterSource;
-  map: tt.Map;
+  geoJsonSource?: any;
+  tileJsonSource?: any;
+  map: maplibregl.Map;
   onSourceAdded: Function;
   onSourceLoaded: Function;
 }
@@ -25,7 +19,7 @@ class Source extends Component<Props> {
   onData = () => {
     const { id, map, geoJsonSource, onSourceLoaded } = this.props;
 
-    const source = map.getSource(id) as GeoJSONSource;
+    const source = map.getSource(id) as any;
     if (!source || !map.isSourceLoaded(id)) {
       return;
     }
@@ -81,7 +75,7 @@ class Source extends Component<Props> {
       if (hasNewTilesSource) {
         const layers = this.unbind();
         map.addSource(id, nextProps.tileJsonSource);
-        layers.forEach((layer) => map.addLayer(layer, layer.before));
+        layers.forEach((layer) => map.addLayer(layer as any, layer.before));
       }
     }
 
@@ -92,7 +86,7 @@ class Source extends Component<Props> {
     ) {
       const layers = this.unbind();
       map.addSource(id, nextProps.geoJsonSource);
-      layers.forEach((layer) => map.addLayer(layer, layer.before));
+      layers.forEach((layer) => map.addLayer(layer as any, layer.before));
     } else if (
       geoJsonSource &&
       nextProps.geoJsonSource &&
@@ -100,19 +94,14 @@ class Source extends Component<Props> {
       nextProps.geoJsonSource.data &&
       map.getSource(id)
     ) {
-      const source = map.getSource(id) as GeoJSONSource;
+      const source = map.getSource(id) as any;
       source.setData(nextProps.geoJsonSource.data);
     }
   }
 
   initialize() {
-    const {
-      id,
-      map,
-      geoJsonSource,
-      tileJsonSource,
-      onSourceAdded
-    } = this.props;
+    const { id, map, geoJsonSource, tileJsonSource, onSourceAdded } =
+      this.props;
 
     if (!map.getSource(id) && (geoJsonSource || tileJsonSource)) {
       if (geoJsonSource) {
@@ -137,13 +126,13 @@ class Source extends Component<Props> {
           const { id: before } = layers[idx + 1] || { id: undefined };
           return { ...layer, before };
         })
-        .filter((layer) => layer.source === id);
+        .filter((layer: any) => layer.source === id);
 
       layers.forEach((layer) => map.removeLayer(layer.id));
 
       map.removeSource(id);
 
-      return layers.reverse();
+      return layers.reverse() as LayerWithBefore[];
     }
     return [];
   }

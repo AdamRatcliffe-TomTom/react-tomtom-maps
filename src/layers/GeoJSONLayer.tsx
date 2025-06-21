@@ -1,5 +1,5 @@
 import { Component } from "react";
-import tt, { Map } from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 import uuid from "uuid/v4";
 import { isEqual } from "lodash";
 import LayerTypes from "./LayerTypes";
@@ -30,8 +30,8 @@ const eventToHandler = {
 };
 
 export interface LineProps {
-  linePaint?: tt.LinePaint;
-  lineLayout?: tt.LineLayout;
+  linePaint?: any;
+  lineLayout?: any;
   lineOnMouseMove?: MouseEvent;
   lineOnMouseEnter?: MouseEvent;
   lineOnMouseLeave?: MouseEvent;
@@ -41,8 +41,8 @@ export interface LineProps {
 }
 
 export interface CircleProps {
-  circlePaint?: tt.CirclePaint;
-  circleLayout?: tt.CircleLayout;
+  circlePaint?: any;
+  circleLayout?: any;
   circleOnMouseMove?: MouseEvent;
   circleOnMouseEnter?: MouseEvent;
   circleOnMouseLeave?: MouseEvent;
@@ -52,8 +52,8 @@ export interface CircleProps {
 }
 
 export interface SymbolProps {
-  symbolLayout?: tt.SymbolLayout;
-  symbolPaint?: tt.SymbolPaint;
+  symbolLayout?: any;
+  symbolPaint?: any;
   symbolOnMouseMove?: MouseEvent;
   symbolOnMouseEnter?: MouseEvent;
   symbolOnMouseLeave?: MouseEvent;
@@ -63,8 +63,8 @@ export interface SymbolProps {
 }
 
 export interface FillProps {
-  fillLayout?: tt.FillLayout;
-  fillPaint?: tt.FillPaint;
+  fillLayout?: any;
+  fillPaint?: any;
   fillOnMouseMove?: MouseEvent;
   fillOnMouseEnter?: MouseEvent;
   fillOnMouseLeave?: MouseEvent;
@@ -74,8 +74,8 @@ export interface FillProps {
 }
 
 export interface FillExtrusionProps {
-  fillExtrusionLayout?: tt.FillExtrusionLayout;
-  fillExtrusionPaint?: tt.FillExtrusionPaint;
+  fillExtrusionLayout?: any;
+  fillExtrusionPaint?: any;
   fillExtrusionOnMouseMove?: MouseEvent;
   fillExtrusionOnMouseEnter?: MouseEvent;
   fillExtrusionOnMouseLeave?: MouseEvent;
@@ -90,29 +90,19 @@ interface Props
     SymbolProps,
     FillProps,
     FillExtrusionProps {
-  map: Map;
+  map: maplibregl.Map;
   data: GeoJSON.Feature | GeoJSON.FeatureCollection | string;
   id?: string;
   before?: string;
   sourceId?: string;
-  sourceOptions?: tt.GeoJSONSource | tt.GeoJSONSourceRaw;
-  layerOptions?: tt.Layer;
+  sourceOptions?: any;
+  layerOptions?: any;
   onInitialize?: Function;
 }
 
-type MapboxEventTypes = Array<keyof tt.MapLayerEventType>;
+type Paints = any;
 
-type Paints =
-  | tt.LinePaint
-  | tt.SymbolPaint
-  | tt.CirclePaint
-  | tt.FillExtrusionPaint;
-
-type Layouts =
-  | tt.FillLayout
-  | tt.LineLayout
-  | tt.CircleLayout
-  | tt.FillExtrusionLayout;
+type Layouts = any;
 
 class GeoJSONLayer extends Component<Props> {
   private id = this.props.id || `geojson-${uuid()}`;
@@ -129,7 +119,9 @@ class GeoJSONLayer extends Component<Props> {
 
   componentDidUpdate(prevProps: Props) {
     const { sourceId, map, data, layerOptions, before } = prevProps;
-    const source = map.getSource(sourceId || this.id) as tt.GeoJSONSource;
+    const source = map.getSource(
+      sourceId || this.id
+    ) as maplibregl.GeoJSONSource;
 
     // update data if needed
     if (this.props.data !== data) {
@@ -152,17 +144,21 @@ class GeoJSONLayer extends Component<Props> {
 
       // update paint properties if needed
       const paintProp = toCamelCase(type) + "Paint";
-      if (!isEqual(prevProps[paintProp], this.props[paintProp])) {
-        for (let key in this.props[paintProp]) {
-          map.setPaintProperty(layerId, key, this.props[paintProp][key]);
+      const currentPaint = (this.props as any)[paintProp];
+      const prevPaint = (prevProps as any)[paintProp];
+      if (!isEqual(prevPaint, currentPaint)) {
+        for (let key in currentPaint) {
+          map.setPaintProperty(layerId, key, currentPaint[key]);
         }
       }
 
       // update layout properties if needed
       const layoutProp = toCamelCase(type) + "Layout";
-      if (!isEqual(prevProps[layoutProp], this.props[layoutProp])) {
-        for (let key in this.props[layoutProp]) {
-          map.setLayoutProperty(layerId, key, this.props[layoutProp][key]);
+      const currentLayout = (this.props as any)[layoutProp];
+      const prevLayout = (prevProps as any)[layoutProp];
+      if (!isEqual(prevLayout, currentLayout)) {
+        for (let key in currentLayout) {
+          map.setLayoutProperty(layerId, key, currentLayout[key]);
         }
       }
 
@@ -208,13 +204,16 @@ class GeoJSONLayer extends Component<Props> {
     }
 
     types.forEach((type) => {
-      const events = Object.keys(eventToHandler) as MapboxEventTypes;
+      const events = Object.keys(eventToHandler) as Array<
+        keyof typeof eventToHandler
+      >;
 
       events.forEach((event) => {
         const prop = toCamelCase(type) + eventToHandler[event];
+        const handler = (this.props as any)[prop];
 
-        if (this.props[prop]) {
-          map.off(event, this.buildLayerId(type), this.props[prop]);
+        if (handler) {
+          map.off(event as any, this.buildLayerId(type), handler);
         }
       });
     });
@@ -227,9 +226,12 @@ class GeoJSONLayer extends Component<Props> {
   createLayer(type: LayerTypes) {
     const { before, map, sourceId, layerOptions } = this.props;
     const layerId = this.buildLayerId(type);
-    const paint: Paints = this.props[`${toCamelCase(type)}Paint`] || {};
+    const paint: Paints =
+      (this.props as any)[`${toCamelCase(type)}Paint`] || {};
     const visibility = Object.keys(paint).length ? "visible" : "none";
-    const layout: Layouts = this.props[`${toCamelCase(type)}Layout`] || {
+    const layout: Layouts = (this.props as any)[
+      `${toCamelCase(type)}Layout`
+    ] || {
       visibility
     };
 
@@ -253,14 +255,17 @@ class GeoJSONLayer extends Component<Props> {
 
     const layerId = this.buildLayerId(type);
 
-    const events = Object.keys(eventToHandler) as MapboxEventTypes;
+    const events = Object.keys(eventToHandler) as Array<
+      keyof typeof eventToHandler
+    >;
 
     events.forEach((event) => {
       const handler =
-        this.props[`${toCamelCase(type)}${eventToHandler[event]}`] || null;
+        (this.props as any)[`${toCamelCase(type)}${eventToHandler[event]}`] ||
+        null;
 
       if (handler) {
-        map.on(event, layerId, handler);
+        map.on(event as any, layerId, handler);
       }
     });
   };

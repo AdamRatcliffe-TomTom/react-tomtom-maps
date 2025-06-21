@@ -1,13 +1,13 @@
 import React, { PureComponent } from "react";
-import tt from "@tomtom-international/web-sdk-maps";
+import maplibregl from "maplibre-gl";
 import Overlay from "./Overlay";
 
 interface Props {
   className: string;
-  coordinates: tt.LngLatLike;
-  closeButton?: boolean;  
+  coordinates: maplibregl.LngLatLike;
+  closeButton?: boolean;
   anchor?: string;
-  offset?: tt.PointLike;
+  offset?: maplibregl.PointLike;
   maxWidth?: string;
   children?: JSX.Element | JSX.Element[];
   onClick?: React.MouseEventHandler<HTMLDivElement>;
@@ -20,7 +20,7 @@ class Popup extends PureComponent<Props> {
   static defaultProps: Partial<Props> = {
     className: "",
     closeButton: true,
-    maxWidth: "240px",    
+    maxWidth: "240px"
   };
 
   render() {
@@ -36,16 +36,16 @@ class Popup extends PureComponent<Props> {
     return (
       <Overlay
         type="popup"
-        className={`mapboxgl-popup ${className}`}
+        className={`maplibregl-popup ${className}`}
         style={{ maxWidth }}
         {...otherProps}
       >
         <React.Fragment>
-          <div className="mapboxgl-popup-tip" />
-          <div className="mapboxgl-popup-content">
+          <div className="maplibregl-popup-tip" />
+          <div className="maplibregl-popup-content">
             {closeButton && (
               <button
-                className="mapboxgl-popup-close-button"
+                className="maplibregl-popup-close-button"
                 type="button"
                 aria-label="Close popup"
                 onClick={onClose}
