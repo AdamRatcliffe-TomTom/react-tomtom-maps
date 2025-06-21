@@ -3,6 +3,7 @@ import maplibregl from "maplibre-gl";
 import { isEqual } from "lodash";
 import IMapOptions from "./IMapOptions";
 import { MapContext } from "./MapContext";
+import { resolveStyle } from "./StyleResolver";
 
 import {
   Events,
@@ -87,6 +88,30 @@ class Map extends Component<Props & Events, State> {
   private _mapContainerRef = createRef<HTMLDivElement>();
   private _map!: maplibregl.Map;
   private listeners: Listeners = {};
+  private _attributionControl: maplibregl.AttributionControl | null = null;
+
+  /**
+   * Creates attribution control with processed custom attributions
+   */
+  private createAttributionControl(
+    customAttribution: string | [string] | undefined,
+    attributionSeparator: string | undefined
+  ): maplibregl.AttributionControl {
+    const attributions = !Array.isArray(customAttribution)
+      ? [customAttribution]
+      : customAttribution;
+
+    const filteredAttributions = attributions.filter(Boolean) as string[];
+    const joinedAttributions =
+      filteredAttributions.length > 0
+        ? filteredAttributions.join(` ${attributionSeparator || "|"} `)
+        : undefined;
+
+    return new maplibregl.AttributionControl({
+      compact: true,
+      customAttribution: joinedAttributions
+    });
+  }
 
   componentDidMount() {
     const {
@@ -103,21 +128,20 @@ class Map extends Component<Props & Events, State> {
       attributionControl,
       mapOptions,
       customAttribution,
-      onStyleLoad
+      onStyleLoad,
+      attributionSeparator
     } = this.props;
+
+    // Resolve the map style using the style resolver
+    const resolvedStyle = resolveStyle(mapStyle, apiKey);
 
     this._map = new maplibregl.Map({
       container: this._mapContainerRef.current!,
-      style:
-        (mapStyle as string) ||
-        `https://api.tomtom.com/style/1/style/*?map=2/basic_street-light&traffic_incidents=2/incidents_light&traffic_flow=2/flow_relative-light&poi=2/poi_light&key=${apiKey}`,
+      style: resolvedStyle,
       center: center as maplibregl.LngLatLike,
       zoom: zoom,
       bearing: bearing,
       pitch: pitch,
-      ...(attributionControl && {
-        attributionControl: {} as any
-      }),
       ...(maxBounds && {
         maxBounds: maxBounds as maplibregl.LngLatBoundsLike
       }),
@@ -130,8 +154,18 @@ class Map extends Component<Props & Events, State> {
       ...(fitBoundsOptions && {
         fitBoundsOptions: fitBoundsOptions as maplibregl.FitBoundsOptions
       }),
+      attributionControl: false,
       ...(mapOptions as any)
     });
+
+    // Only add attribution control if attributionControl prop is true
+    if (attributionControl) {
+      this._attributionControl = this.createAttributionControl(
+        customAttribution,
+        attributionSeparator
+      );
+      this._map.addControl(this._attributionControl);
+    }
 
     this._map.on("load", () => {
       this.setState({ ready: true });
@@ -143,10 +177,6 @@ class Map extends Component<Props & Events, State> {
 
     if (padding !== undefined) {
       this._map.setPadding(padding as maplibregl.PaddingOptions);
-    }
-
-    if (customAttribution!.length) {
-      this._map.on("style.load", this.addAttributions);
     }
 
     this.listeners = listenEvents(events, this.props, this._map);
@@ -164,20 +194,6 @@ class Map extends Component<Props & Events, State> {
       this.updateMap(prevProps, this.props);
     }
   }
-
-  addAttributions = () => {
-    const { customAttribution, attributionSeparator } = this.props;
-    const attributionsToAdd = !Array.isArray(customAttribution)
-      ? [customAttribution]
-      : customAttribution;
-
-    // Note: maplibre-gl handles attribution differently than TomTom
-    // This is a simplified implementation
-    console.log(
-      "Attributions:",
-      attributionsToAdd.join(` ${attributionSeparator} `)
-    );
-  };
 
   updateMap(oldProps: Props, newProps: Props) {
     const zoom = this._map.getZoom();
@@ -199,6 +215,9 @@ class Map extends Component<Props & Events, State> {
 
     const pitchDidChange =
       oldProps.pitch !== newProps.pitch && newProps.pitch !== pitch;
+
+    const mapStyleDidChange =
+      newProps.mapStyle && !isEqual(newProps.mapStyle, oldProps.mapStyle);
 
     if (
       newProps.containerStyle!.width !== oldProps.containerStyle!.width ||
@@ -224,8 +243,30 @@ class Map extends Component<Props & Events, State> {
       this._map.setPadding(newProps.padding as maplibregl.PaddingOptions);
     }
 
-    if (newProps.mapStyle && !isEqual(newProps.mapStyle, oldProps.mapStyle)) {
-      this._map.setStyle(newProps.mapStyle as string);
+    if (mapStyleDidChange) {
+      const resolvedStyle = resolveStyle(newProps.mapStyle, newProps.apiKey);
+      this._map.setStyle(resolvedStyle as string);
+    }
+
+    // Handle attribution control changes
+    if (
+      oldProps.attributionControl !== newProps.attributionControl ||
+      mapStyleDidChange
+    ) {
+      // Remove existing attribution control if it exists
+      if (this._attributionControl) {
+        this._map.removeControl(this._attributionControl);
+        this._attributionControl = null;
+      }
+
+      // Add attribution control if enabled
+      if (newProps.attributionControl) {
+        this._attributionControl = this.createAttributionControl(
+          newProps.customAttribution,
+          newProps.attributionSeparator
+        );
+        this._map.addControl(this._attributionControl);
+      }
     }
 
     if (newProps.bounds) {
