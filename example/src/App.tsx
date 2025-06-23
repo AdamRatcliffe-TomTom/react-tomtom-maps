@@ -70,14 +70,13 @@ const mapStyles = [
     type: "shorthand"
   },
   {
-    label: "Genesis - Full Style with Traffic & Restrictions",
+    label: "Genesis - Full Style with Traffic",
     value: {
       mapType: "genesis",
       map: "2/basic_street-light",
       trafficIncidents: "2/incidents_light",
       trafficFlow: "2/flow_relative-light",
-      hillshade: "2/hillshade_light",
-      restrictions: "2/restrictions_light"
+      hillshade: "2/hillshade_light"
     } as TomTomStyleDescriptor,
     attribution: "Genesis",
     type: "descriptor"
@@ -108,6 +107,11 @@ const mapStyles = [
 function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [showGeoJSON, setShowGeoJSON] = useState(true);
+  const [stylesVisibility, setStylesVisibility] = useState({
+    trafficFlow: true,
+    trafficIncidents: true,
+    hillshade: true
+  });
   const [selectedStyle, setSelectedStyle] = useState<
     TomTomStyleDescriptor | string
   >({
@@ -183,6 +187,52 @@ function App() {
         >
           {showGeoJSON ? "Hide" : "Show"} GeoJSON Layer
         </button>
+
+        <div style={{ marginTop: "10px" }}>
+          <h4 style={{ margin: "0 0 10px 0" }}>Style Components Visibility:</h4>
+          <label style={{ marginRight: "15px" }}>
+            <input
+              type="checkbox"
+              checked={stylesVisibility.trafficFlow}
+              onChange={(e) =>
+                setStylesVisibility((prev) => ({
+                  ...prev,
+                  trafficFlow: e.target.checked
+                }))
+              }
+              style={{ marginRight: "5px" }}
+            />
+            Traffic Flow
+          </label>
+          <label style={{ marginRight: "15px" }}>
+            <input
+              type="checkbox"
+              checked={stylesVisibility.trafficIncidents}
+              onChange={(e) =>
+                setStylesVisibility((prev) => ({
+                  ...prev,
+                  trafficIncidents: e.target.checked
+                }))
+              }
+              style={{ marginRight: "5px" }}
+            />
+            Traffic Incidents
+          </label>
+          <label style={{ marginRight: "15px" }}>
+            <input
+              type="checkbox"
+              checked={stylesVisibility.hillshade}
+              onChange={(e) =>
+                setStylesVisibility((prev) => ({
+                  ...prev,
+                  hillshade: e.target.checked
+                }))
+              }
+              style={{ marginRight: "5px" }}
+            />
+            Hillshade
+          </label>
+        </div>
       </div>
 
       <div className="map-container">
@@ -194,6 +244,7 @@ function App() {
           zoom={10}
           containerStyle={{ width: "100%", height: "100%" }}
           globe
+          stylesVisibility={stylesVisibility}
         >
           {/* Navigation Controls */}
           <NavigationControl
@@ -261,9 +312,10 @@ function App() {
         <ul>
           <li>✅ Basic Map with TomTom API key</li>
           <li>✅ TomTom Style Configuration (Genesis & Orbis)</li>
+          <li>✅ New Style Descriptor Format with Traffic & Hillshade</li>
           <li>
-            ✅ New Style Descriptor Format with Traffic, Hillshade &
-            Restrictions
+            ✅ Style Components Visibility Controls (Traffic Flow, Incidents,
+            Hillshade)
           </li>
           <li>✅ Navigation Controls (zoom, compass, pitch)</li>
           <li>✅ Geolocate Control (user location tracking)</li>

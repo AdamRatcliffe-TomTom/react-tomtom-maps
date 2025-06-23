@@ -37,6 +37,11 @@ interface Props {
   customAttribution?: string | [string];
   attributionSeparator?: string;
   globe?: boolean;
+  stylesVisibility?: {
+    trafficFlow?: boolean;
+    trafficIncidents?: boolean;
+    hillshade?: boolean;
+  };
   children?: any;
 }
 
@@ -189,6 +194,27 @@ class Map extends Component<Props & Events, State> {
 
     this._map.on("load", () => {
       this.setState({ ready: true });
+
+      // Set initial styles visibility if provided
+      if (this.props.stylesVisibility) {
+        const { trafficFlow, trafficIncidents, hillshade } =
+          this.props.stylesVisibility;
+
+        if (trafficFlow !== undefined) {
+          this.setLayerVisibilityForSource("vectorTilesFlow", trafficFlow);
+        }
+
+        if (trafficIncidents !== undefined) {
+          this.setLayerVisibilityForSource(
+            "vectorTilesIncidents",
+            trafficIncidents
+          );
+        }
+
+        if (hillshade !== undefined) {
+          this.setLayerVisibilityForSource("hillshade", hillshade);
+        }
+      }
 
       if (onStyleLoad) {
         onStyleLoad(this._map, {} as any);
@@ -344,6 +370,62 @@ class Map extends Component<Props & Events, State> {
         ...animationOptions
       });
     }
+
+    // Handle styles visibility changes
+    if (newProps.stylesVisibility) {
+      const trafficFlow = newProps.stylesVisibility?.trafficFlow;
+      const trafficFlowDidChange =
+        trafficFlow !== oldProps.stylesVisibility?.trafficFlow;
+
+      if (trafficFlowDidChange) {
+        this.setLayerVisibilityForSource("vectorTilesFlow", trafficFlow);
+      }
+
+      const trafficIncidents = newProps.stylesVisibility?.trafficIncidents;
+      const trafficIncidentsDidChange =
+        trafficIncidents !== oldProps.stylesVisibility?.trafficIncidents;
+
+      if (trafficIncidentsDidChange) {
+        this.setLayerVisibilityForSource(
+          "vectorTilesIncidents",
+          trafficIncidents
+        );
+      }
+
+      const hillshade = newProps.stylesVisibility?.hillshade;
+      const hillshadeDidChange =
+        hillshade !== oldProps.stylesVisibility?.hillshade;
+
+      if (hillshadeDidChange) {
+        this.setLayerVisibilityForSource("hillshade", hillshade);
+      }
+    }
+  }
+
+  /**
+   * Sets the visibility of all layers for a given source
+   * @param sourceId - The source ID to target
+   * @param visible - Whether the layers should be visible
+   */
+  private setLayerVisibilityForSource(
+    sourceId: string,
+    visible: boolean | undefined
+  ) {
+    if (!this._map || !this._map.getStyle()) {
+      return;
+    }
+
+    this._map.getStyle().layers.forEach((layer) => {
+      if ("source" in layer && layer.source === sourceId) {
+        if (this._map.getLayer(layer.id)) {
+          this._map.setLayoutProperty(
+            layer.id,
+            "visibility",
+            visible ? "visible" : "none"
+          );
+        }
+      }
+    });
   }
 
   getMap() {

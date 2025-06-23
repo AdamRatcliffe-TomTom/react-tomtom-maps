@@ -14,7 +14,6 @@ export interface TomTomStyleDescriptor {
   trafficIncidents?: string;
   trafficFlow?: string;
   hillshade?: string;
-  restrictions?: string;
 }
 
 /**
@@ -78,7 +77,7 @@ export function resolveStyle(
 
 /**
  * Builds a merged TomTom style URL with multiple components
- * @param descriptor - Style descriptor object with map, trafficIncidents, trafficFlow, hillshade, and restrictions
+ * @param descriptor - Style descriptor object with map, trafficIncidents, trafficFlow, and hillshade
  * @param apiKey - TomTom API key
  * @returns The complete merged style URL
  */
@@ -105,9 +104,6 @@ function buildMergedTomTomStyleUrl(
   if (descriptor.hillshade) {
     const paramName = mapType === "genesis" ? "hillshade" : "hillshade";
     params.append(paramName, descriptor.hillshade);
-  }
-  if (descriptor.restrictions && mapType === "genesis") {
-    params.append("restrictions", descriptor.restrictions);
   }
 
   // Add API key
