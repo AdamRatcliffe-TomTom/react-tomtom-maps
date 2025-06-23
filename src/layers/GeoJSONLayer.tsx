@@ -106,6 +106,7 @@ type Layouts = any;
 
 class GeoJSONLayer extends Component<Props> {
   private id = this.props.id || `geojson-${uuid()}`;
+  private styleChangeHandled = false;
 
   componentDidMount() {
     const { map, onInitialize = () => {} } = this.props;
@@ -274,8 +275,15 @@ class GeoJSONLayer extends Component<Props> {
     const { sourceId, map } = this.props;
 
     if (!map.getSource(sourceId || this.id)) {
-      this.unbind();
-      this.initialize();
+      if (!this.styleChangeHandled) {
+        this.styleChangeHandled = true;
+        this.unbind();
+        setTimeout(() => {
+          this.initialize();
+        }, 100);
+      }
+    } else {
+      this.styleChangeHandled = false;
     }
   };
 
