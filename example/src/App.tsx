@@ -124,8 +124,6 @@ function App() {
   );
   const customAttribution = selectedStyleConfig?.attribution;
 
-  console.log(customAttribution);
-
   return (
     <div className="App">
       <h1>React MapLibre GL Example</h1>
