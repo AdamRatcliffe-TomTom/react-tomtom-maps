@@ -62,11 +62,6 @@ class Map extends Component<Props & Events, State> {
     customAttribution: "",
     attributionSeparator: "|",
     globe: false,
-    stylesVisibility: {
-      trafficFlow: false,
-      trafficIncidents: false,
-      hillshade: true
-    },
     mapOptions: {
       minZoom: 0,
       maxZoom: 20,
@@ -126,6 +121,28 @@ class Map extends Component<Props & Events, State> {
   }
 
   /**
+   * Merges default stylesVisibility with provided props
+   * @param providedVisibility - The stylesVisibility prop provided by the user
+   * @returns Merged stylesVisibility object with defaults for missing properties
+   */
+  private getMergedStylesVisibility(providedVisibility?: {
+    trafficFlow?: boolean;
+    trafficIncidents?: boolean;
+    hillshade?: boolean;
+  }) {
+    const defaultVisibility = {
+      trafficFlow: false,
+      trafficIncidents: false,
+      hillshade: true
+    };
+
+    return {
+      ...defaultVisibility,
+      ...providedVisibility
+    };
+  }
+
+  /**
    * Sets the map projection and updates the container background accordingly
    */
   private setGlobe(isGlobe: boolean) {
@@ -158,8 +175,7 @@ class Map extends Component<Props & Events, State> {
       mapOptions,
       customAttribution,
       onStyleLoad,
-      attributionSeparator,
-      globe
+      attributionSeparator
     } = this.props;
 
     // Resolve the map style using the style resolver
@@ -212,25 +228,18 @@ class Map extends Component<Props & Events, State> {
       }
 
       // Set initial styles visibility if provided
-      if (this.props.stylesVisibility) {
-        const { trafficFlow, trafficIncidents, hillshade } =
-          this.props.stylesVisibility;
+      const stylesVisibility = this.getMergedStylesVisibility(
+        this.props.stylesVisibility
+      );
+      const { trafficFlow, trafficIncidents, hillshade } = stylesVisibility;
 
-        if (trafficFlow !== undefined) {
-          this.setLayerVisibilityForSource("vectorTilesFlow", trafficFlow);
-        }
+      this.setLayerVisibilityForSource("vectorTilesFlow", trafficFlow);
+      this.setLayerVisibilityForSource(
+        "vectorTilesIncidents",
+        trafficIncidents
+      );
+      this.setLayerVisibilityForSource("hillshade", hillshade);
 
-        if (trafficIncidents !== undefined) {
-          this.setLayerVisibilityForSource(
-            "vectorTilesIncidents",
-            trafficIncidents
-          );
-        }
-
-        if (hillshade !== undefined) {
-          this.setLayerVisibilityForSource("hillshade", hillshade);
-        }
-      }
       this._map.setSky({
         "atmosphere-blend": [
           "interpolate",
@@ -390,33 +399,39 @@ class Map extends Component<Props & Events, State> {
     }
 
     // Handle styles visibility changes
-    if (newProps.stylesVisibility) {
-      const trafficFlow = newProps.stylesVisibility?.trafficFlow;
-      const trafficFlowDidChange =
-        trafficFlow !== oldProps.stylesVisibility?.trafficFlow;
+    const oldMergedVisibility = this.getMergedStylesVisibility(
+      oldProps.stylesVisibility
+    );
+    const newMergedVisibility = this.getMergedStylesVisibility(
+      newProps.stylesVisibility
+    );
 
-      if (trafficFlowDidChange) {
-        this.setLayerVisibilityForSource("vectorTilesFlow", trafficFlow);
-      }
+    const trafficFlowDidChange =
+      oldMergedVisibility.trafficFlow !== newMergedVisibility.trafficFlow;
+    if (trafficFlowDidChange) {
+      this.setLayerVisibilityForSource(
+        "vectorTilesFlow",
+        newMergedVisibility.trafficFlow
+      );
+    }
 
-      const trafficIncidents = newProps.stylesVisibility?.trafficIncidents;
-      const trafficIncidentsDidChange =
-        trafficIncidents !== oldProps.stylesVisibility?.trafficIncidents;
+    const trafficIncidentsDidChange =
+      oldMergedVisibility.trafficIncidents !==
+      newMergedVisibility.trafficIncidents;
+    if (trafficIncidentsDidChange) {
+      this.setLayerVisibilityForSource(
+        "vectorTilesIncidents",
+        newMergedVisibility.trafficIncidents
+      );
+    }
 
-      if (trafficIncidentsDidChange) {
-        this.setLayerVisibilityForSource(
-          "vectorTilesIncidents",
-          trafficIncidents
-        );
-      }
-
-      const hillshade = newProps.stylesVisibility?.hillshade;
-      const hillshadeDidChange =
-        hillshade !== oldProps.stylesVisibility?.hillshade;
-
-      if (hillshadeDidChange) {
-        this.setLayerVisibilityForSource("hillshade", hillshade);
-      }
+    const hillshadeDidChange =
+      oldMergedVisibility.hillshade !== newMergedVisibility.hillshade;
+    if (hillshadeDidChange) {
+      this.setLayerVisibilityForSource(
+        "hillshade",
+        newMergedVisibility.hillshade
+      );
     }
   }
 
