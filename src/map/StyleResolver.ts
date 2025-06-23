@@ -1,4 +1,5 @@
 import { isJSON } from "../utils";
+import { DEFAULT_TOMTOM_STYLE } from "../defaults";
 
 export type TomTomMapType = "genesis" | "orbis";
 export type TomTomStyleVariant = string;
@@ -28,13 +29,7 @@ export function resolveStyle(
 ): string | maplibregl.Style {
   // If no style provided, use default
   if (!style) {
-    return resolveStyle(
-      {
-        mapType: "genesis",
-        map: "2/basic_street-light"
-      },
-      apiKey
-    );
+    return resolveStyle(DEFAULT_TOMTOM_STYLE, apiKey);
   }
 
   // If it's already a full URL, return as-is
