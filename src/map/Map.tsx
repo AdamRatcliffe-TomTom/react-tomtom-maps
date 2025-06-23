@@ -62,6 +62,11 @@ class Map extends Component<Props & Events, State> {
     customAttribution: "",
     attributionSeparator: "|",
     globe: false,
+    stylesVisibility: {
+      trafficFlow: false,
+      trafficIncidents: false,
+      hillshade: true
+    },
     mapOptions: {
       minZoom: 0,
       maxZoom: 20,
@@ -195,6 +200,17 @@ class Map extends Component<Props & Events, State> {
     this._map.on("load", () => {
       this.setState({ ready: true });
 
+      if (onStyleLoad) {
+        onStyleLoad(this._map, {} as any);
+      }
+    });
+
+    // Set projection on style load
+    this._map.on("style.load", () => {
+      if (globe) {
+        this.setGlobe(true);
+      }
+
       // Set initial styles visibility if provided
       if (this.props.stylesVisibility) {
         const { trafficFlow, trafficIncidents, hillshade } =
@@ -214,17 +230,6 @@ class Map extends Component<Props & Events, State> {
         if (hillshade !== undefined) {
           this.setLayerVisibilityForSource("hillshade", hillshade);
         }
-      }
-
-      if (onStyleLoad) {
-        onStyleLoad(this._map, {} as any);
-      }
-    });
-
-    // Set projection on style load
-    this._map.on("style.load", () => {
-      if (globe) {
-        this.setGlobe(true);
       }
     });
 

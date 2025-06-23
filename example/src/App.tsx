@@ -108,8 +108,8 @@ function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [showGeoJSON, setShowGeoJSON] = useState(true);
   const [stylesVisibility, setStylesVisibility] = useState({
-    trafficFlow: true,
-    trafficIncidents: true,
+    trafficFlow: false,
+    trafficIncidents: false,
     hillshade: true
   });
   const [selectedStyle, setSelectedStyle] = useState<
