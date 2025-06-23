@@ -1,0 +1,1 @@
+export { isJSON } from "./json";

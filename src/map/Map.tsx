@@ -3,7 +3,7 @@ import maplibregl from "maplibre-gl";
 import { isEqual } from "lodash";
 import IMapOptions from "./IMapOptions";
 import { MapContext } from "./MapContext";
-import { resolveStyle } from "./StyleResolver";
+import { resolveStyle, TomTomStyleDescriptor } from "./StyleResolver";
 
 import {
   Events,
@@ -21,7 +21,7 @@ interface Props {
   apiKey: string;
   className?: string;
   containerStyle?: React.CSSProperties;
-  mapStyle?: string | maplibregl.Style;
+  mapStyle?: string | maplibregl.Style | TomTomStyleDescriptor;
   zoom?: number;
   center?: maplibregl.LngLatLike;
   bearing?: number;
@@ -56,7 +56,7 @@ class Map extends Component<Props & Events, State> {
     movingMethod: "flyTo",
     customAttribution: "",
     attributionSeparator: "|",
-    globe: true,
+    globe: false,
     mapOptions: {
       minZoom: 0,
       maxZoom: 20,

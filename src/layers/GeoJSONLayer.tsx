@@ -1,6 +1,6 @@
 import { Component } from "react";
 import maplibregl from "maplibre-gl";
-import uuid from "uuid/v4";
+import { v4 as uuid } from "uuid";
 import { isEqual } from "lodash";
 import LayerTypes from "./LayerTypes";
 import { withMap } from "../map/MapContext";

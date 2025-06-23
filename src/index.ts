@@ -10,6 +10,7 @@ import Image from "./layers/Image";
 import Source from "./layers/Source";
 import GeoJSONLayer from "./layers/GeoJSONLayer";
 import { MapContext, withMap } from "./map/MapContext";
+import * as utils from "./utils";
 
 export {
   Overlay,
@@ -23,7 +24,8 @@ export {
   Source,
   GeoJSONLayer,
   MapContext,
-  withMap
+  withMap,
+  utils
 };
 
 export default Map;
