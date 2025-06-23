@@ -43,6 +43,10 @@ const sampleGeoJSON = {
   ]
 };
 
+// Map view constants
+const MAP_CENTER: [number, number] = [-74.006, 40.7128]; // New York City
+const MAP_ZOOM = 10;
+
 // Available TomTom map styles
 const mapStyles = [
   {
@@ -113,6 +117,7 @@ const mapStyles = [
 function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [showGeoJSON, setShowGeoJSON] = useState(true);
+  const [showGlobe, setShowGlobe] = useState(false);
   const [stylesVisibility, setStylesVisibility] = useState({
     trafficFlow: false,
     trafficIncidents: false,
@@ -189,9 +194,15 @@ function App() {
         </button>
         <button
           onClick={() => setShowGeoJSON(!showGeoJSON)}
-          style={{ padding: "8px 16px" }}
+          style={{ marginRight: "10px", padding: "8px 16px" }}
         >
           {showGeoJSON ? "Hide" : "Show"} GeoJSON Layer
+        </button>
+        <button
+          onClick={() => setShowGlobe(!showGlobe)}
+          style={{ padding: "8px 16px" }}
+        >
+          {showGlobe ? "Mercator" : "Globe"}
         </button>
 
         <div style={{ marginTop: "10px" }}>
@@ -246,10 +257,10 @@ function App() {
           apiKey={TOMTOM_API_KEY}
           mapStyle={selectedStyle}
           customAttribution={customAttribution}
-          center={[-74.006, 40.7128]}
-          zoom={10}
+          center={MAP_CENTER}
+          zoom={MAP_ZOOM}
           containerStyle={{ width: "100%", height: "100%" }}
-          globe
+          globe={showGlobe}
           stylesVisibility={stylesVisibility}
         >
           {/* Navigation Controls */}
@@ -272,7 +283,7 @@ function App() {
 
           {/* Sample Marker */}
           <Marker
-            coordinates={[-74.006, 40.7128]}
+            coordinates={MAP_CENTER}
             color="#ff0000"
             width={30}
             height={30}
@@ -280,7 +291,9 @@ function App() {
           />
           {showPopup && (
             <Popup
-              coordinates={[-74.006, 40.7128]}
+              coordinates={MAP_CENTER}
+              anchor="bottom"
+              offset={[0, -3]}
               closeButton={true}
               onClose={() => setShowPopup(false)}
             >
@@ -323,6 +336,7 @@ function App() {
             ✅ Style Components Visibility Controls (Traffic Flow, Incidents,
             Hillshade)
           </li>
+          <li>✅ Projection Toggle (Mercator vs Globe)</li>
           <li>✅ Navigation Controls (zoom, compass, pitch)</li>
           <li>✅ Geolocate Control (user location tracking)</li>
           <li>✅ Scale Control (metric/imperial units)</li>

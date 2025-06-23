@@ -207,7 +207,7 @@ class Map extends Component<Props & Events, State> {
 
     // Set projection on style load
     this._map.on("style.load", () => {
-      if (globe) {
+      if (this.props.globe) {
         this.setGlobe(true);
       }
 
