@@ -327,7 +327,7 @@ class Map extends Component<Props & Events, State> {
 
     if (mapStyleDidChange) {
       const resolvedStyle = resolveStyle(newProps.mapStyle, newProps.apiKey);
-      this._map.setStyle(resolvedStyle as string);
+      this._map.setStyle(resolvedStyle as string, { diff: false });
     }
 
     // Handle projection changes
