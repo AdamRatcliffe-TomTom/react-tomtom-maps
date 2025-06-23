@@ -231,6 +231,19 @@ class Map extends Component<Props & Events, State> {
           this.setLayerVisibilityForSource("hillshade", hillshade);
         }
       }
+      this._map.setSky({
+        "atmosphere-blend": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          0,
+          1,
+          5,
+          1,
+          7,
+          0
+        ]
+      });
     });
 
     if (padding !== undefined) {

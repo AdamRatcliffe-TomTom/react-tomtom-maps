@@ -58,6 +58,12 @@ const mapStyles = [
     type: "shorthand"
   },
   {
+    label: "Genesis - Basic Street Satellite (Shorthand)",
+    value: "genesis:2/basic_street-satellite",
+    attribution: "Genesis",
+    type: "shorthand"
+  },
+  {
     label: "Orbis - Basic Street Light (Shorthand)",
     value: "orbis:basic_street-light",
     attribution: "Orbis",
@@ -333,6 +339,10 @@ function App() {
           </li>
           <li>
             <code>genesis:2/basic_street-dark</code> - Genesis dark theme
+          </li>
+          <li>
+            <code>genesis:2/basic_street-satellite</code> - Genesis satellite
+            theme
           </li>
           <li>
             <code>orbis:basic_street-light</code> - Orbis light theme
