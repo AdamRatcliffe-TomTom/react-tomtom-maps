@@ -7,5 +7,6 @@ export const DEFAULT_TOMTOM_STYLE = {
   map: "2/basic_street-light",
   trafficIncidents: "2/incidents_light",
   trafficFlow: "2/flow_relative-light",
-  hillshade: "2/hillshade_light"
+  hillshade: "2/hillshade_light",
+  poi: "2/poi_light"
 };

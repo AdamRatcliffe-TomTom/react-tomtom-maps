@@ -15,6 +15,7 @@ export interface TomTomStyleDescriptor {
   trafficIncidents?: string;
   trafficFlow?: string;
   hillshade?: string;
+  poi?: string;
 }
 
 /**
@@ -99,6 +100,9 @@ function buildMergedTomTomStyleUrl(
   if (descriptor.hillshade) {
     const paramName = mapType === "genesis" ? "hillshade" : "hillshade";
     params.append(paramName, descriptor.hillshade);
+  }
+  if (descriptor.poi) {
+    params.append("poi", descriptor.poi);
   }
 
   // Add API key
