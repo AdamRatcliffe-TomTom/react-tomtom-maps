@@ -42,6 +42,7 @@ interface Props {
     trafficIncidents?: boolean;
     hillshade?: boolean;
   };
+  sky?: Record<string, any> | null;
   children?: any;
 }
 
@@ -62,6 +63,7 @@ class Map extends Component<Props & Events, State> {
     customAttribution: "",
     attributionSeparator: "|",
     globe: false,
+    sky: null,
     mapOptions: {
       minZoom: 0,
       maxZoom: 20,
@@ -175,7 +177,8 @@ class Map extends Component<Props & Events, State> {
       mapOptions,
       customAttribution,
       onStyleLoad,
-      attributionSeparator
+      attributionSeparator,
+      sky
     } = this.props;
 
     // Resolve the map style using the style resolver
@@ -227,6 +230,11 @@ class Map extends Component<Props & Events, State> {
         this.setGlobe(true);
       }
 
+      // Set sky configuration if provided
+      if (sky) {
+        this._map.setSky(sky);
+      }
+
       // Set initial styles visibility if provided
       const stylesVisibility = this.getMergedStylesVisibility(
         this.props.stylesVisibility
@@ -239,20 +247,6 @@ class Map extends Component<Props & Events, State> {
         trafficIncidents
       );
       this.setLayerVisibilityForSource("hillshade", hillshade);
-
-      this._map.setSky({
-        "atmosphere-blend": [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          0,
-          1,
-          5,
-          1,
-          7,
-          0
-        ]
-      });
     });
 
     if (padding !== undefined) {
@@ -301,6 +295,8 @@ class Map extends Component<Props & Events, State> {
 
     const projectionDidChange = oldProps.globe !== newProps.globe;
 
+    const skyDidChange = !isEqual(oldProps.sky, newProps.sky);
+
     if (
       newProps.containerStyle!.width !== oldProps.containerStyle!.width ||
       newProps.containerStyle!.height !== oldProps.containerStyle!.height
@@ -333,6 +329,16 @@ class Map extends Component<Props & Events, State> {
     // Handle projection changes
     if (projectionDidChange) {
       this.setGlobe(newProps.globe || false);
+    }
+
+    // Handle sky changes
+    if (skyDidChange) {
+      if (newProps.sky) {
+        this._map.setSky(newProps.sky);
+      } else {
+        // Remove sky configuration by setting it to undefined
+        this._map.setSky(undefined as any);
+      }
     }
 
     // Handle attribution control changes
