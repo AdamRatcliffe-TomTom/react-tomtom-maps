@@ -41,6 +41,7 @@ interface Props {
     trafficFlow?: boolean;
     trafficIncidents?: boolean;
     hillshade?: boolean;
+    poi?: boolean;
   };
   sky?: Record<string, any> | null;
   children?: any;
@@ -131,11 +132,13 @@ class Map extends Component<Props & Events, State> {
     trafficFlow?: boolean;
     trafficIncidents?: boolean;
     hillshade?: boolean;
+    poi?: boolean;
   }) {
     const defaultVisibility = {
       trafficFlow: false,
       trafficIncidents: false,
-      hillshade: true
+      hillshade: true,
+      poi: true
     };
 
     return {
@@ -239,7 +242,8 @@ class Map extends Component<Props & Events, State> {
       const stylesVisibility = this.getMergedStylesVisibility(
         this.props.stylesVisibility
       );
-      const { trafficFlow, trafficIncidents, hillshade } = stylesVisibility;
+      const { trafficFlow, trafficIncidents, hillshade, poi } =
+        stylesVisibility;
 
       this.setLayerVisibilityForSource("vectorTilesFlow", trafficFlow);
       this.setLayerVisibilityForSource(
@@ -247,6 +251,7 @@ class Map extends Component<Props & Events, State> {
         trafficIncidents
       );
       this.setLayerVisibilityForSource("hillshade", hillshade);
+      this.setPoiLayersVisibility(poi);
     });
 
     if (padding !== undefined) {
@@ -439,6 +444,11 @@ class Map extends Component<Props & Events, State> {
         newMergedVisibility.hillshade
       );
     }
+
+    const poiDidChange = oldMergedVisibility.poi !== newMergedVisibility.poi;
+    if (poiDidChange) {
+      this.setPoiLayersVisibility(newMergedVisibility.poi);
+    }
   }
 
   /**
@@ -465,6 +475,34 @@ class Map extends Component<Props & Events, State> {
         }
       }
     });
+  }
+
+  /**
+   * Sets the visibility of POI layers
+   * @param visible - Whether the POI layers should be visible
+   */
+  private setPoiLayersVisibility(visible: boolean | undefined) {
+    if (!this._map) {
+      return;
+    }
+
+    const poiLayerId = "POI";
+    const poiMicroLayerId = "POI - Micro";
+
+    if (this._map.getLayer(poiLayerId)) {
+      this._map.setLayoutProperty(
+        poiLayerId,
+        "visibility",
+        visible ? "visible" : "none"
+      );
+    }
+    if (this._map.getLayer(poiMicroLayerId)) {
+      this._map.setLayoutProperty(
+        poiMicroLayerId,
+        "visibility",
+        visible ? "visible" : "none"
+      );
+    }
   }
 
   getMap() {
