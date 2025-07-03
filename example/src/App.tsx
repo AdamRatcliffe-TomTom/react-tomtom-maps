@@ -121,7 +121,8 @@ function App() {
   const [stylesVisibility, setStylesVisibility] = useState({
     trafficFlow: false,
     trafficIncidents: false,
-    hillshade: true
+    hillshade: true,
+    poi: true
   });
   const [selectedStyle, setSelectedStyle] = useState<
     TomTomStyleDescriptor | string
@@ -249,6 +250,20 @@ function App() {
             />
             Hillshade
           </label>
+          <label style={{ marginRight: "15px" }}>
+            <input
+              type="checkbox"
+              checked={stylesVisibility.poi}
+              onChange={(e) =>
+                setStylesVisibility((prev) => ({
+                  ...prev,
+                  poi: e.target.checked
+                }))
+              }
+              style={{ marginRight: "5px" }}
+            />
+            Points of Interest (POI)
+          </label>
         </div>
       </div>
 
@@ -334,8 +349,9 @@ function App() {
           <li>✅ New Style Descriptor Format with Traffic & Hillshade</li>
           <li>
             ✅ Style Components Visibility Controls (Traffic Flow, Incidents,
-            Hillshade)
+            Hillshade, POI)
           </li>
+          <li>✅ POI (Points of Interest) Toggle Control</li>
           <li>✅ Projection Toggle (Mercator vs Globe)</li>
           <li>✅ Navigation Controls (zoom, compass, pitch)</li>
           <li>✅ Geolocate Control (user location tracking)</li>

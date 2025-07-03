@@ -245,6 +245,8 @@ class Map extends Component<Props & Events, State> {
       const { trafficFlow, trafficIncidents, hillshade, poi } =
         stylesVisibility;
 
+      console.log("poi", poi);
+
       this.setLayerVisibilityForSource("vectorTilesFlow", trafficFlow);
       this.setLayerVisibilityForSource(
         "vectorTilesIncidents",
